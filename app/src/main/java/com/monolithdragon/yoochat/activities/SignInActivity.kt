@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.monolithdragon.yoochat.R
 import com.monolithdragon.yoochat.databinding.ActivitySignInBinding
 
 class SignInActivity : AppCompatActivity() {
@@ -41,6 +44,10 @@ class SignInActivity : AppCompatActivity() {
         binding.textHaveNewAccount.setOnClickListener {
             switchToSignUpActivity()
         }
+
+        binding.forgotPassword.setOnClickListener {
+            resetPassword()
+        }
         
         binding.buttonSignIn.setOnClickListener { 
             if (isValidate()) {
@@ -48,6 +55,8 @@ class SignInActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun isValidate(): Boolean {
         val email = binding.inputEmail.text.toString()
@@ -87,6 +96,37 @@ class SignInActivity : AppCompatActivity() {
                     showMessage("Authentication failed.")
                 }
             }
+    }
+
+    private fun resetPassword() {
+        val resetEmail = EditText(this@SignInActivity)
+        val passwordResetDialog = AlertDialog.Builder(this@SignInActivity)
+        passwordResetDialog.setTitle(getString(R.string.reset_password))
+        passwordResetDialog.setMessage(getString(R.string.enter_your_email))
+        passwordResetDialog.setView(resetEmail)
+
+        passwordResetDialog.setPositiveButton(getString(R.string.reset_dialog_yes)) { dialog, _ ->
+            val email = resetEmail.text.toString()
+
+            if (email.trim().isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                auth.sendPasswordResetEmail(email)
+                    .addOnSuccessListener {
+                        showMessage(getString(R.string.reset_link_sent))
+                        dialog.dismiss()
+                    }
+                    .addOnFailureListener {
+                        showMessage("Error: Reset Link Is Not Sent" + it.message)
+                        dialog.dismiss()
+                    }
+            }
+        }
+
+        passwordResetDialog.setNegativeButton(getString(R.string.reset_dialog_cancel)) { dialog, _ ->
+            // close the dialog
+            dialog.cancel()
+        }
+
+        passwordResetDialog.create().show()
     }
     
     private fun showMessage(message: String) {

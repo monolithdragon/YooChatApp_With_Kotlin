@@ -14,4 +14,9 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="sign_up">Sign Up</string>
     <string name="have_you_need_new_account">Have you need a new account?</string>
+    <string name="reset_password">Reset Password ?</string>
+    <string name="enter_your_email">Enter Your Email To Received Reset Link.</string>
+    <string name="reset_dialog_yes">Yes</string>
+    <string name="reset_link_sent">Reset Link Sent To Your Email</string>
+    <string name="reset_dialog_cancel">Cancel</string>
 </resources>

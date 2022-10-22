@@ -14,4 +14,9 @@
     <string name="forgot_password">Elfelejtett jelszó?</string>
     <string name="sign_up">Regisztáció</string>
     <string name="have_you_need_new_account">Új fiókra van szüksége?</string>
+    <string name="reset_password">Visszaállítja a jelszót ?</string>
+    <string name="enter_your_email">Adja meg e-mail-címét a fogadott visszaállítási hivatkozáshoz.</string>
+    <string name="reset_dialog_yes">Igen</string>
+    <string name="reset_link_sent">Az e-mailre küldött hivatkozás visszaállításaEmail</string>
+    <string name="reset_dialog_cancel">Mégse</string>
 </resources>
