@@ -18,5 +18,6 @@
     <string name="enter_your_email">Enter Your Email To Received Reset Link.</string>
     <string name="reset_dialog_yes">Yes</string>
     <string name="reset_link_sent">Reset Link Sent To Your Email</string>
+    <string name="reset_link_not_sent">Error: Reset Link Is Not Sent</string>
     <string name="reset_dialog_cancel">Cancel</string>
 </resources>

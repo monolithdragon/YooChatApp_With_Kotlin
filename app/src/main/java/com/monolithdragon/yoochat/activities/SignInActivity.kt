@@ -56,8 +56,6 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun isValidate(): Boolean {
         val email = binding.inputEmail.text.toString()
         val password = binding.inputPassword.text.toString()
@@ -115,7 +113,7 @@ class SignInActivity : AppCompatActivity() {
                         dialog.dismiss()
                     }
                     .addOnFailureListener {
-                        showMessage("Error: Reset Link Is Not Sent" + it.message)
+                        showMessage(getString(R.string.reset_link_not_sent) + it.message)
                         dialog.dismiss()
                     }
             }
