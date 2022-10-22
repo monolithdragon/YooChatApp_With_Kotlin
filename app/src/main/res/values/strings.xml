@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">YooChat</string>
+    <string name="app_name" translatable="false">YooChat</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="sign_up_to_continue">Sign up to continue</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Submit</string>
+    <string name="already_have_an_account">Already Have An Account?</string>
+    <string name="sign_in">Sign In</string>
 </resources>

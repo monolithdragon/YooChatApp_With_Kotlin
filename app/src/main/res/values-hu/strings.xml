@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">YooChat</string>
+    <string name="create_new_account">Regisztráció</string>
+    <string name="sign_up_to_continue">Regisztráljon a folytatáshoz</string>
+    <string name="username">Felhasználónév</string>
+    <string name="email">Email</string>
+    <string name="password">Jelszó</string>
+    <string name="confirm_password">Jelszó megerősítése</string>
+    <string name="sign_up">Beküldés</string>
+    <string name="already_have_an_account">Már van fiókja?</string>
+    <string name="sign_in">Bejelentkezés</string>
 </resources>
