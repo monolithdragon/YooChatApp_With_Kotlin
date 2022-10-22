@@ -4,10 +4,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -15,12 +18,30 @@ import com.google.firebase.ktx.Firebase
 import com.monolithdragon.yoochat.R
 import com.monolithdragon.yoochat.databinding.ActivitySignUpBinding
 import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
 
     private var encodedProfileImage: String? = null
+    private val selectProfileImage: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null) {
+                val imageUri = result.data?.data
+
+                try {
+                    val inputStream = contentResolver.openInputStream(imageUri!!)
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    binding.imageProfile.setImageBitmap(bitmap)
+                    binding.imgAddImage.visibility = View.GONE
+                    encodedProfileImage = encodeImage(bitmap)
+
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +66,12 @@ class SignUpActivity : AppCompatActivity() {
             if (isValidate()) {
                 signUp()
             }
+        }
+
+        binding.imageProfile.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            selectProfileImage.launch(intent)
         }
     }
 
