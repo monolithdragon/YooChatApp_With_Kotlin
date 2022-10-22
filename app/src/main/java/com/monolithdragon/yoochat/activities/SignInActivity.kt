@@ -1,31 +1,33 @@
-package com.monolithdragon.yoochat
+package com.monolithdragon.yoochat.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.monolithdragon.yoochat.databinding.ActivitySignUpBinding
+import com.monolithdragon.yoochat.databinding.ActivitySignInBinding
 
-class SignUpActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySignUpBinding
+class SignInActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySignInBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setListeners()
+        setListener()
     }
 
-    private fun setListeners() {
-        binding.textAlreadyHaveAccount.setOnClickListener {
+    private fun setListener() {
+        binding.textHaveNewAccount.setOnClickListener {
             switchToSignUpActivity()
         }
     }
 
     private fun switchToSignUpActivity() {
-        val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
+        val intent = Intent(this@SignInActivity, SignUpActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
+
+
 }
