@@ -6,7 +6,12 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="sign_up">Submit</string>
+    <string name="submit">Submit</string>
     <string name="already_have_an_account">Already Have An Account?</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_in_to_continue">Sign In to continue</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="have_you_need_new_account">Have you need a new account?</string>
 </resources>

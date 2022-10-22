@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="create_new_account">Regisztráció</string>
-    <string name="sign_up_to_continue">Regisztráljon a folytatáshoz</string>
+    <string name="sign_up_to_continue">A folytatáshoz regisztráljon</string>
     <string name="username">Felhasználónév</string>
     <string name="email">Email</string>
     <string name="password">Jelszó</string>
     <string name="confirm_password">Jelszó megerősítése</string>
-    <string name="sign_up">Beküldés</string>
+    <string name="submit">Beküldés</string>
     <string name="already_have_an_account">Már van fiókja?</string>
     <string name="sign_in">Bejelentkezés</string>
+    <string name="sign_in_to_continue">A folytatáshoz jelentkezzen be</string>
+    <string name="welcome_back">Isten hozott újra itt</string>
+    <string name="forgot_password">Elfelejtett jelszó?</string>
+    <string name="sign_up">Regisztáció</string>
+    <string name="have_you_need_new_account">Új fiókra van szüksége?</string>
 </resources>
