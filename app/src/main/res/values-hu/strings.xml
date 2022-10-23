@@ -21,4 +21,7 @@
     <string name="reset_link_not_sent">Hiba: A hivatkozás visszaállítása nem lett elküldveent</string>
 
     <string name="reset_dialog_cancel">Mégse</string>
+    <string name="select_user">A Felhasználó kiválasztása</string>
+    <string name="unable_update_token">Nem sikerült frissíteni a tokent</string>
+    <string name="no_user_available">No user available</string>
 </resources>

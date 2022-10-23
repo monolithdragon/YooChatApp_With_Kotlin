@@ -13,5 +13,5 @@
     <color name="sender_message_background">#A8B808</color>
     <color name="receiver_message_background">#7C7C7C</color>
     <color name="error">#B00020</color>
-    <color name="online">#008000</color>
+    <color name="online">#00FF00</color>
 </resources>
