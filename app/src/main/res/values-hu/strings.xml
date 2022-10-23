@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">YooChat</string>
+    <string name="create_new_account">Regisztráció</string>
+    <string name="sign_up_to_continue">A folytatáshoz regisztráljon</string>
+    <string name="username">Felhasználónév</string>
+    <string name="email">Email</string>
+    <string name="password">Jelszó</string>
+    <string name="confirm_password">Jelszó megerősítése</string>
+    <string name="submit">Beküldés</string>
+    <string name="already_have_an_account">Már van fiókja?</string>
+    <string name="sign_in">Bejelentkezés</string>
+    <string name="sign_in_to_continue">A folytatáshoz jelentkezzen be</string>
+    <string name="welcome_back">Isten hozott újra itt</string>
+    <string name="forgot_password">Elfelejtett jelszó?</string>
+    <string name="sign_up">Regisztáció</string>
+    <string name="have_you_need_new_account">Új fiókra van szüksége?</string>
+    <string name="reset_password">Visszaállítja a jelszót ?</string>
+    <string name="enter_your_email">Adja meg e-mail-címét a fogadott visszaállítási hivatkozáshoz.</string>
+    <string name="reset_dialog_yes">Igen</string>
+    <string name="reset_link_sent">Az e-mailre küldött hivatkozás visszaállításaEmail</string>
+    <string name="reset_link_not_sent">Hiba: A hivatkozás visszaállítása nem lett elküldveent</string>
+
+    <string name="reset_dialog_cancel">Mégse</string>
 </resources>

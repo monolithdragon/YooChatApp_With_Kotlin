@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "720032370536",
+    "project_id": "yoochat-d8314",
+    "storage_bucket": "yoochat-d8314.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720032370536:android:9c81b2a655c2dcb173d0dd",
+        "android_client_info": {
+          "package_name": "com.monolithdragon.yoochat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "720032370536-ae960493aoqfo2cf87g8ngqc6473rvoe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWO5PArK73FEjyKl8xi5Sl6oyJ0Gv6UMY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720032370536-ae960493aoqfo2cf87g8ngqc6473rvoe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
