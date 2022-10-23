@@ -10,13 +10,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.monolithdragon.yoochat.R
 import com.monolithdragon.yoochat.databinding.ActivitySignInBinding
+import com.monolithdragon.yoochat.utilities.Constants
+import com.monolithdragon.yoochat.utilities.PreferenceManager
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseFirestore
+    private lateinit var preferenceManager: PreferenceManager
+
+    private var email:String? = null
+    private var password: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +47,8 @@ class SignInActivity : AppCompatActivity() {
 
     private fun initFields() {
         auth = Firebase.auth
+        database = Firebase.firestore
+        preferenceManager = PreferenceManager(this@SignInActivity)
     }
 
     private fun setListener() {
@@ -49,7 +60,10 @@ class SignInActivity : AppCompatActivity() {
             resetPassword()
         }
         
-        binding.buttonSignIn.setOnClickListener { 
+        binding.buttonSignIn.setOnClickListener {
+            email = binding.inputEmail.text.toString()
+            password = binding.inputPassword.text.toString()
+
             if (isValidate()) {
                 signIn()
             }
@@ -57,20 +71,18 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun isValidate(): Boolean {
-        val email = binding.inputEmail.text.toString()
-        val password = binding.inputPassword.text.toString()
 
-        if (email.trim().isEmpty()) {
+        if (email?.trim()!!.isEmpty()) {
             showMessage("Enter email address...")
             return false
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email!!).matches()) {
             showMessage("Enter valid email address...")
             return false
         }
 
-        if (password.trim().isEmpty()) {
+        if (password?.trim()!!.isEmpty()) {
             showMessage("Enter password...")
             return false
         }
@@ -79,20 +91,37 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        val email = binding.inputEmail.text.toString()
-        val password = binding.inputPassword.text.toString()
 
         loaded(true)
 
-        auth.signInWithEmailAndPassword(email, password)
+        auth.signInWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    loaded(false)
-                    switchToMainActivity()
+                    setUserPreferenceDataFromDatabase()
                 } else {
                     loaded(false)
                     showMessage("Authentication failed.")
                 }
+            }
+    }
+
+    private fun setUserPreferenceDataFromDatabase() {
+        database.collection(Constants.KEY_COLLECTION_USERS)
+            .whereEqualTo(Constants.KEY_USER_EMAIL, email)
+            .get()
+            .addOnSuccessListener { snapshots ->
+                val document = snapshots.documents[0]
+
+                preferenceManager.putString(Constants.KEY_USER_ID, document.id)
+                preferenceManager.putString(Constants.KEY_USER_NAME, document.getString(Constants.KEY_USER_NAME)!!)
+                preferenceManager.putString(Constants.KEY_USER_IMAGE, document.getString(Constants.KEY_USER_IMAGE)!!)
+
+                loaded(false)
+                switchToMainActivity()
+            }
+            .addOnFailureListener { exception ->
+                loaded(false)
+                showMessage(exception.message!!)
             }
     }
 
