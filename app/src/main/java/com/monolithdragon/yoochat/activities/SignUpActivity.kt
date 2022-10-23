@@ -14,17 +14,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.monolithdragon.yoochat.R
 import com.monolithdragon.yoochat.databinding.ActivitySignUpBinding
+import com.monolithdragon.yoochat.utilities.Constants
+import com.monolithdragon.yoochat.utilities.PreferenceManager
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseFirestore
+    private lateinit var preferenceManager: PreferenceManager
 
+    private var name: String? = null
+    private var email:String? = null
+    private var password: String? = null
+    private var confirmedPassword: String? = null
     private var encodedProfileImage: String? = null
+
     private val selectProfileImage: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
@@ -55,6 +66,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun initFields() {
         auth = Firebase.auth
+        database = Firebase.firestore
+        preferenceManager = PreferenceManager(this@SignUpActivity)
     }
 
     private fun setListeners() {
@@ -63,6 +76,11 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         binding.buttonSignUp.setOnClickListener {
+            name = binding.inputName.text.toString()
+            email = binding.inputEmail.text.toString()
+            password = binding.inputPassword.text.toString()
+            confirmedPassword = binding.inputConfirmPassword.text.toString()
+
             if (isValidate()) {
                 signUp()
             }
@@ -76,16 +94,12 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun signUp() {
-        val email = binding.inputEmail.text.toString()
-        val password = binding.inputPassword.text.toString()
-
         loaded(true)
 
-        auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    loaded(false)
-                    switchToMainActivity()
+                    addUserToDatabase()
                 } else {
                     loaded(false)
                     showMessage("Authorization failed")
@@ -93,39 +107,58 @@ class SignUpActivity : AppCompatActivity() {
             }
     }
 
-    private fun isValidate(): Boolean {
-       val name = binding.inputName.text.toString()
-       val email = binding.inputEmail.text.toString()
-       val password = binding.inputPassword.text.toString()
-       val confirmedPassword = binding.inputConfirmPassword.text.toString()
+    private fun addUserToDatabase() {
+        val user = hashMapOf(
+            Constants.KEY_USER_NAME to name,
+            Constants.KEY_USER_EMAIL to email,
+            Constants.KEY_USER_IMAGE to encodedProfileImage
+        )
 
+        database.collection(Constants.KEY_COLLECTION_USERS)
+            .add(user)
+            .addOnSuccessListener { documentReference ->
+                loaded(false)
+
+                preferenceManager.putString(Constants.KEY_USER_ID, documentReference.id)
+                preferenceManager.putString(Constants.KEY_USER_NAME, name!!)
+                preferenceManager.putString(Constants.KEY_USER_IMAGE, encodedProfileImage!!)
+
+                switchToMainActivity()
+            }
+            .addOnFailureListener { exception ->
+                loaded(false)
+                showMessage(exception.message!!)
+            }
+    }
+
+    private fun isValidate(): Boolean {
 
         if (encodedProfileImage.isNullOrEmpty()) {
             encodedProfileImage =
                 encodeImage(BitmapFactory.decodeResource(resources, R.drawable.profile_image))
         }
 
-        if (name.trim().isEmpty()) {
+        if (name?.trim()!!.isEmpty()) {
             showMessage("Enter username...")
             return false
         }
 
-        if (email.trim().isEmpty()) {
+        if (email?.trim()!!.isEmpty()) {
             showMessage("Enter email address...")
             return false
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email!!).matches()) {
             showMessage("Enter valid email address...")
             return false
         }
 
-        if (password.trim().isEmpty()) {
+        if (password?.trim()!!.isEmpty()) {
             showMessage("Enter password...")
             return false
         }
 
-        if (confirmedPassword.trim().isEmpty()) {
+        if (confirmedPassword?.trim()!!.isEmpty()) {
             showMessage("Enter confirmed password...")
             return false
         }
