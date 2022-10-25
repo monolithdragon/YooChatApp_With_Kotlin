@@ -1,24 +1,35 @@
 package com.monolithdragon.yoochat.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.monolithdragon.yoochat.R
+import com.monolithdragon.yoochat.adapters.ConversationAdapter
 import com.monolithdragon.yoochat.databinding.ActivityMainBinding
+import com.monolithdragon.yoochat.listeners.UserListener
+import com.monolithdragon.yoochat.models.Conversation
+import com.monolithdragon.yoochat.models.Message
+import com.monolithdragon.yoochat.models.User
 import com.monolithdragon.yoochat.utilities.Constants
 import com.monolithdragon.yoochat.utilities.PreferenceManager
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UserListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var preferenceManager: PreferenceManager
@@ -34,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         setListeners()
         loadUserDetails()
         getToken()
+        listenConversation()
     }
 
     private fun setListeners() {
@@ -76,9 +88,89 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    private fun listenConversation() {
+        checkMessageRemotely(Constants.KEY_CHAT_SENDER_ID)
+        checkMessageRemotely(Constants.KEY_CHAT_RECEIVER_ID)
+    }
+
+    private fun checkMessageRemotely(key: String) {
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+            .whereEqualTo(key, preferenceManager.getString(Constants.KEY_USER_ID))
+            .addSnapshotListener(eventListener)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private val eventListener = EventListener<QuerySnapshot> { value, error ->
+        if (error != null) {
+            return@EventListener
+        }
+
+        if (value != null) {
+            val conversations: MutableList<Conversation> = mutableListOf()
+
+            for (documentChange in value.documentChanges) {
+                if (documentChange.type == DocumentChange.Type.ADDED) {
+                    val conversation = Conversation()
+                    val message = Message()
+                    message.message = documentChange.document.getString(Constants.KEY_CHAT_MESSAGE)
+                    message.senderId = documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID)
+                    message.receiverId = documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
+                    message.updateAt = documentChange.document.getDate(Constants.KEY_CHAT_CREATE_AT)
+                    conversation.conversationMessage = message
+
+                    if (preferenceManager.getString(Constants.KEY_USER_ID).equals(documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID))) {
+                        conversation.conversationId = documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
+                        conversation.conversationName = documentChange.document.getString(Constants.KEY_CONVERSATION_RECEIVER_NAME)
+                        conversation.conversationImage = documentChange.document.getString(Constants.KEY_CONVERSATION_RECEIVER_IMAGE)
+                    } else {
+                        conversation.conversationId = documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID)
+                        conversation.conversationName = documentChange.document.getString(Constants.KEY_CONVERSATION_SENDER_NAME)
+                        conversation.conversationImage = documentChange.document.getString(Constants.KEY_CONVERSATION_SENDER_IMAGE)
+                    }
+
+                    conversations.add(conversation)
+                } else if (documentChange.type == DocumentChange.Type.MODIFIED) {
+                    for (conversation in conversations) {
+                        if (conversation.conversationMessage?.senderId.equals(documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID))
+                            && conversation.conversationMessage?.receiverId.equals(documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID))) {
+                            conversation.conversationMessage?.message = documentChange.document.getString(Constants.KEY_CHAT_MESSAGE)
+                            conversation.conversationMessage?.updateAt = documentChange.document.getDate(Constants.KEY_CHAT_CREATE_AT)
+                            break
+                        }
+                    }
+                }
+            }
+
+            if (conversations.isNotEmpty()) {
+                conversations.sort()
+
+                val adapter = ConversationAdapter(conversations, this@MainActivity)
+                binding.conversationRecyclerView.adapter = adapter
+                adapter.notifyDataSetChanged()
+                binding.conversationRecyclerView.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+    }
+
     private fun signOut() {
-        auth.signOut()
-        switchToSignInActivity()
+        showMessage(getString(R.string.signout))
+
+        val updates = hashMapOf<String, Any>(
+            Constants.KEY_USER_TOKEN to FieldValue.delete()
+        )
+
+        database.collection(Constants.KEY_COLLECTION_USERS)
+            .document(preferenceManager.getString(Constants.KEY_USER_ID)!!)
+            .update(updates)
+            .addOnSuccessListener {
+                preferenceManager.clear()
+                auth.signOut()
+                switchToSignInActivity()
+            }
+            .addOnFailureListener {
+                showMessage(getString(R.string.unable_to_sign_out))
+            }
     }
 
     private fun showMessage(message: String) {
@@ -89,6 +181,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this@MainActivity, SignInActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
+        finish()
     }
 
     private fun switchToUsersActivity() {
@@ -102,4 +195,10 @@ class MainActivity : AppCompatActivity() {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 
+    override fun onClickListener(user: User) {
+        val intent = Intent(this@MainActivity, ChatActivity::class.java)
+        intent.putExtra(Constants.KEY_RECEIVER_USER, user)
+        startActivity(intent)
+        finish()
+    }
 }

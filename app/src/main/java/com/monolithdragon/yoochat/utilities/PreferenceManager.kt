@@ -18,4 +18,11 @@ class PreferenceManager(context: Context) {
         }
     }
 
+    fun clear() {
+        with(sharedPreferences.edit()) {
+            clear()
+            apply()
+        }
+    }
+
 }

@@ -10,11 +10,12 @@ import com.google.firebase.ktx.Firebase
 import com.monolithdragon.yoochat.R
 import com.monolithdragon.yoochat.adapters.UserAdapter
 import com.monolithdragon.yoochat.databinding.ActivityUsersBinding
+import com.monolithdragon.yoochat.listeners.UserListener
 import com.monolithdragon.yoochat.models.User
 import com.monolithdragon.yoochat.utilities.Constants
 import com.monolithdragon.yoochat.utilities.PreferenceManager
 
-class UsersActivity : AppCompatActivity() {
+class UsersActivity : AppCompatActivity(), UserListener {
     private lateinit var binding: ActivityUsersBinding
     private lateinit var database: FirebaseFirestore
     private lateinit var preferenceManager: PreferenceManager
@@ -68,7 +69,7 @@ class UsersActivity : AppCompatActivity() {
                 if (users.isNotEmpty()) {
                     users.sortWith { x, y -> x.name!!.compareTo(y.name!!) }
 
-                    val adapter = UserAdapter(users)
+                    val adapter = UserAdapter(users, this@UsersActivity)
                     binding.usersRecycleView.adapter = adapter
                     binding.usersRecycleView.visibility = View.VISIBLE
                 } else {
@@ -100,5 +101,17 @@ class UsersActivity : AppCompatActivity() {
         val intent = Intent(this@UsersActivity, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
+    }
+
+    private fun switchToChatActivity(user: User) {
+        val intent = Intent(this@UsersActivity, ChatActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.putExtra(Constants.KEY_RECEIVER_USER, user)
+        startActivity(intent)
+    }
+
+    override fun onClickListener(user: User) {
+        switchToChatActivity(user)
+        finish()
     }
 }

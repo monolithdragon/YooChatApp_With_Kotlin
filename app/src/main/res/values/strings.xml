@@ -23,4 +23,7 @@
     <string name="select_user">Select User</string>
     <string name="unable_update_token">Unable update token</string>
     <string name="no_user_available">No user available</string>
+    <string name="type_message">Type message…</string>
+    <string name="signout">Sign out…</string>
+    <string name="unable_to_sign_out">Unable to sign out</string>
 </resources>
