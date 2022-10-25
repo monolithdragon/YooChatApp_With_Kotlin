@@ -33,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var receiverUser: User
 
     private var messages: MutableList<Message> = mutableListOf()
+    private var conversationId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,15 +76,36 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
+        val message = binding.inputMessage.text.toString()
+        val createAt = Date.from(Instant.now())
+
         val chatMessages = hashMapOf(
-            Constants.KEY_CHAT_MESSAGE to binding.inputMessage.text.toString(),
+            Constants.KEY_CHAT_MESSAGE to message,
             Constants.KEY_CHAT_SENDER_ID to senderId,
             Constants.KEY_CHAT_RECEIVER_ID to receiverUser.id,
-            Constants.KEY_CHAT_CREATE_AT to Date.from(Instant.now())
+            Constants.KEY_CHAT_CREATE_AT to createAt
         )
 
         database.collection(Constants.KEY_COLLECTION_MESSAGES)
             .add(chatMessages)
+
+        if (!conversationId.isNullOrEmpty()) {
+            updateConversation(message, createAt)
+        } else {
+            val conversions = hashMapOf(
+                Constants.KEY_CHAT_MESSAGE to message,
+                Constants.KEY_CHAT_CREATE_AT to createAt,
+                Constants.KEY_CHAT_SENDER_ID to senderId,
+                Constants.KEY_CONVERSATION_SENDER_NAME to preferenceManager.getString(Constants.KEY_USER_NAME),
+                Constants.KEY_CONVERSATION_SENDER_IMAGE to preferenceManager.getString(Constants.KEY_USER_IMAGE),
+                Constants.KEY_CHAT_RECEIVER_ID to receiverUser.id,
+                Constants.KEY_CONVERSATION_RECEIVER_NAME to receiverUser.name,
+                Constants.KEY_CONVERSATION_RECEIVER_IMAGE to receiverUser.profileImage,
+            )
+
+            database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+                .add(conversions)
+        }
 
         binding.inputMessage.text = null
     }
@@ -146,10 +168,49 @@ class ChatActivity : AppCompatActivity() {
 
                 binding.chatRecyclerView.visibility = View.VISIBLE
             }
-
         }
 
         binding.progressBar.visibility = View.GONE
+
+        if (conversationId == null) {
+            checkForConversation()
+        }
+    }
+
+    private fun checkForConversation() {
+        if (messages.size > 0) {
+            checkForConversionRemotely(
+                senderId,
+                receiverUser.id
+            )
+
+            checkForConversionRemotely(
+                receiverUser.id,
+                senderId
+            )
+        }
+    }
+
+    private fun checkForConversionRemotely(senderId: String?, receiverId: String?) {
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
+            .whereEqualTo(Constants.KEY_CHAT_SENDER_ID, senderId)
+            .whereEqualTo(Constants.KEY_CHAT_RECEIVER_ID, receiverId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful && task.result != null && task.result.documents.size != 0) {
+                    conversationId = task.result.documents[0].id
+                }
+            }
+    }
+
+    private fun updateConversation(message: String, date: Date) {
+        val updates = hashMapOf<String, Any>(
+            Constants.KEY_CHAT_MESSAGE to message,
+            Constants.KEY_CHAT_CREATE_AT to date
+        )
+
+        database.collection(Constants.KEY_COLLECTION_CONVERSATIONS).document(conversationId!!)
+            .update(updates)
     }
 
     private fun getBitmapFromEncoded(encodedImage: String?): Bitmap? {

@@ -33,11 +33,11 @@
         android:textSize="@dimen/_13ssp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/viewSupporter"
-        app:layout_constraintEnd_toStartOf="@id/online"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageProfile" />
 
     <TextView
-        android:id="@+id/textEmail"
+        android:id="@+id/textRecentMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
@@ -45,21 +45,10 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/secondary_text"
-        android:textSize="@dimen/_10ssp"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintTop_toBottomOf="@id/viewSupporter"
-        app:layout_constraintEnd_toStartOf="@id/online"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageProfile" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/online"
-        android:layout_width="@dimen/_10sdp"
-        android:layout_height="@dimen/_10sdp"
-        android:background="@drawable/background_image"
-        android:backgroundTint="@color/online"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@id/textName"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

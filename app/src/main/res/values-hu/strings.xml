@@ -19,10 +19,11 @@
     <string name="reset_dialog_yes">Igen</string>
     <string name="reset_link_sent">Az e-mailre küldött hivatkozás visszaállításaEmail</string>
     <string name="reset_link_not_sent">Hiba: A hivatkozás visszaállítása nem lett elküldveent</string>
-
     <string name="reset_dialog_cancel">Mégse</string>
     <string name="select_user">A Felhasználó kiválasztása</string>
     <string name="unable_update_token">Nem sikerült frissíteni a tokent</string>
-    <string name="no_user_available">No user available</string>
-    <string name="type_message">Type message</string>
+    <string name="no_user_available">Nincs elérhető felhasználó</string>
+    <string name="type_message">Üzenet…</string>
+    <string name="signout">Kilépés</string>
+    <string name="unable_to_sign_out">Nem lehet kilépni</string>
 </resources>
