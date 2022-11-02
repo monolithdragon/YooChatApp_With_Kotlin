@@ -56,8 +56,8 @@ class ChatActivity : BaseActivity() {
         setContentView(binding.root)
 
         initFields()
-        setListener()
         loadReceiverUserDetails()
+        setListener()
         listenMessages()
     }
 
@@ -79,11 +79,17 @@ class ChatActivity : BaseActivity() {
         }
 
         binding.imageCall.setOnClickListener {
-            showMessage("Click call")
+            val intent = Intent(this@ChatActivity, OutgoingInvitationActivity::class.java)
+            intent.putExtra(Constants.KEY_RECEIVER_USER, receiverUser)
+            intent.putExtra(Constants.KEY_INVITATION_TYPE, Constants.INVITATION_AUDIO)
+            startActivity(intent)
         }
 
         binding.imageVideoCall.setOnClickListener {
-            showMessage("Click video call")
+            val intent = Intent(this@ChatActivity, OutgoingInvitationActivity::class.java)
+            intent.putExtra(Constants.KEY_RECEIVER_USER, receiverUser)
+            intent.putExtra(Constants.KEY_INVITATION_TYPE, Constants.INVITATION_VIDEO)
+            startActivity(intent)
         }
     }
 

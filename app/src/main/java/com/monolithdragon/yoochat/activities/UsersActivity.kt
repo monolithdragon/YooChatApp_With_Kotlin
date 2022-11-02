@@ -67,8 +67,9 @@ class UsersActivity : BaseActivity(), UserListener {
 
                 if (users.isNotEmpty()) {
                     users.sortWith { x, y -> x.name!!.compareTo(y.name!!) }
+                    val isOnline = preferenceManager.getBoolean(Constants.KEY_USER_ONLINE)!!
 
-                    val adapter = UserAdapter(users, this@UsersActivity)
+                    val adapter = UserAdapter(users, this@UsersActivity, isOnline)
                     binding.usersRecycleView.adapter = adapter
                     binding.usersRecycleView.visibility = View.VISIBLE
                 } else {
@@ -112,13 +113,5 @@ class UsersActivity : BaseActivity(), UserListener {
     override fun onClickListener(user: User) {
         switchToChatActivity(user)
         finish()
-    }
-
-    override fun onCallAudioMeeting(user: User) {
-
-    }
-
-    override fun onCallVideoMeeting(user: User) {
-
     }
 }

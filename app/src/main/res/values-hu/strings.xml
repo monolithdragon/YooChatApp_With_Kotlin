@@ -26,4 +26,6 @@
     <string name="type_message">Üzenet…</string>
     <string name="signout">Kilépés</string>
     <string name="unable_to_sign_out">Nem lehet kilépni</string>
+    <string name="incoming_meeting_invitation">Incoming Meeting Invitation</string>
+    <string name="sending_meeting_invitation">Sending Meeting Invitation</string>
 </resources>

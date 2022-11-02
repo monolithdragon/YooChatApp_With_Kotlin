@@ -21,11 +21,26 @@ class Constants {
         const val KEY_CONVERSATION_SENDER_IMAGE = "senderImage"
         const val KEY_CONVERSATION_RECEIVER_IMAGE = "receiverImage"
         const val KEY_USER_ONLINE = "online"
+        const val KEY_INVITATION_TYPE = "type"
+
+        const val INVITATION_AUDIO = "audio"
+        const val INVITATION_VIDEO = "video"
+
         const val BASE_URL = "https://fcm.googleapis.com/fcm/"
-        const val SERVER_KEY = "AAAAp6VGD2g:APA91bHj2LUzHwDQa0JKglNDmQ9_8jCish0I9VIM3yJCddDxbGzx__f6dihnX1U2R2ymvLNz7cr8_8E86-Dir8JpT3ewyuIc4Vbg3fM5v9RcERrN1q67l3LYTPZDRUd8nGrGcSqK6AC1"
-        const val CONTENT_TYPE = "application/json"
+
+        private const val SERVER_KEY = "AAAAp6VGD2g:APA91bHj2LUzHwDQa0JKglNDmQ9_8jCish0I9VIM3yJCddDxbGzx__f6dihnX1U2R2ymvLNz7cr8_8E86-Dir8JpT3ewyuIc4Vbg3fM5v9RcERrN1q67l3LYTPZDRUd8nGrGcSqK6AC1"
+        private const val CONTENT_TYPE = "application/json"
+
         const val REMOTE_MESSAGE_DATA = "data"
         const val REMOTE_MESSAGE_REGISTRATION_IDS = "registration_ids"
+        const val REMOTE_MESSAGE_INVITATION = "invitation"
+        const val REMOTE_MESSAGE_MEETING_TYPE = "meetingType"
+        const val REMOTE_MESSAGE_INVITATION_RESPONSE = "invitationResponse"
+        const val REMOTE_MESSAGE_INVITATION_ACCEPTED = "accepted"
+        const val REMOTE_MESSAGE_INVITATION_REJECTED = "rejected"
+        const val REMOTE_MESSAGE_INVITATION_CANCELLED = "cancelled"
+
+        const val REMOTE_MESSAGE_MEETING_ROOM = "meetingRoom"
 
         val remoteMessageHeaders = hashMapOf(
             "Authorization" to "key=${SERVER_KEY}",

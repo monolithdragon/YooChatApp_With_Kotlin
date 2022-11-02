@@ -2,9 +2,11 @@ package com.monolithdragon.yoochat.notification
 
 import android.app.PendingIntent
 import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.monolithdragon.yoochat.activities.ChatActivity
+import com.monolithdragon.yoochat.activities.IncomingInvitationActivity
 import com.monolithdragon.yoochat.models.User
 import com.monolithdragon.yoochat.utilities.Constants
 
@@ -21,16 +23,37 @@ class MessagingService: FirebaseMessagingService() {
             user.name = remoteMessage.data[Constants.KEY_USER_NAME]
             user.token = remoteMessage.data[Constants.KEY_USER_TOKEN]
 
-            val title = user.name
-            val message = remoteMessage.data[Constants.KEY_CHAT_MESSAGE]
+            val type = remoteMessage.data[Constants.KEY_INVITATION_TYPE]
 
-            val intent = Intent(this@MessagingService, ChatActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK.or(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent.putExtra(Constants.KEY_RECEIVER_USER, user)
-            val pendingIntent = PendingIntent.getActivity(this@MessagingService, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            if (!type.isNullOrEmpty()) {
+                if (type == Constants.REMOTE_MESSAGE_INVITATION) {
+                    val intent = Intent(this@MessagingService, IncomingInvitationActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.putExtra(Constants.REMOTE_MESSAGE_MEETING_TYPE, remoteMessage.data[Constants.REMOTE_MESSAGE_MEETING_TYPE])
+                    intent.putExtra(Constants.KEY_RECEIVER_USER, user)
+                    intent.putExtra(Constants.REMOTE_MESSAGE_MEETING_ROOM, remoteMessage.data[Constants.REMOTE_MESSAGE_MEETING_ROOM])
 
-            val notificationManager = YooNotificationManager(this@MessagingService)
-            notificationManager.notification(title, message, pendingIntent)
+                    startActivity(intent)
+                } else if (type == Constants.REMOTE_MESSAGE_INVITATION_RESPONSE) {
+                    val intent = Intent(Constants.REMOTE_MESSAGE_INVITATION_RESPONSE)
+                    intent.putExtra(Constants.REMOTE_MESSAGE_INVITATION_RESPONSE, remoteMessage.data[Constants.REMOTE_MESSAGE_INVITATION_RESPONSE])
+                    LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+                }
+            } else {
+                val title = user.name
+                val message = remoteMessage.data[Constants.KEY_CHAT_MESSAGE]
+
+                val intent = Intent(this@MessagingService, ChatActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                intent.putExtra(Constants.KEY_RECEIVER_USER, user)
+                val pendingIntent = PendingIntent.getActivity(this@MessagingService,
+                                                              0,
+                                                              intent,
+                                                              PendingIntent.FLAG_MUTABLE)
+
+                val notificationManager = YooNotificationManager(this@MessagingService)
+                notificationManager.notification(title, message, pendingIntent)
+            }
         }
     }
 }

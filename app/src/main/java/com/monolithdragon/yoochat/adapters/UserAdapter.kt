@@ -4,13 +4,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.monolithdragon.yoochat.databinding.ItemContainerUserBinding
 import com.monolithdragon.yoochat.listeners.UserListener
 import com.monolithdragon.yoochat.models.User
 
-class UserAdapter(private var users: List<User>, private val userListener: UserListener) :
+class UserAdapter(private var users: List<User>, private val userListener: UserListener, private val isOnline: Boolean) :
         RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     inner class UserViewHolder(private val binding: ItemContainerUserBinding) :
@@ -19,14 +20,13 @@ class UserAdapter(private var users: List<User>, private val userListener: UserL
             binding.textName.text = user.name
             binding.textEmail.text = user.email
             binding.imageProfile.setImageBitmap(getUserImage(user.profileImage))
+            if (isOnline) {
+                binding.online.visibility = View.VISIBLE
+            } else {
+                binding.online.visibility = View.GONE
+            }
             binding.root.setOnClickListener {
                 userListener.onClickListener(user)
-            }
-            binding.imagePhoneCall.setOnClickListener {
-                userListener.onCallAudioMeeting(user)
-            }
-            binding.imageVideoCall.setOnClickListener {
-                userListener.onCallVideoMeeting(user)
             }
         }
 

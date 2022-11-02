@@ -3,23 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:padding="@dimen/_8sdp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageProfile"
-        android:layout_width="@dimen/_35sdp"
-        android:layout_height="@dimen/_35sdp"
-        android:background="@drawable/background_image"
+    <FrameLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageProfile"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/background_image"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/online"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:background="@drawable/background_image"
+            android:backgroundTint="@color/online"
+            android:padding="@dimen/_4sdp"
+            android:visibility="gone"
+            android:layout_gravity="bottom"/>
+
+    </FrameLayout>
 
     <View
         android:id="@+id/viewSupporter"
         android:layout_width="1dp"
         android:layout_height="1dp"
-        app:layout_constraintBottom_toBottomOf="@id/imageProfile"
-        app:layout_constraintStart_toEndOf="@id/imageProfile"
-        app:layout_constraintTop_toTopOf="@id/imageProfile" />
+        app:layout_constraintBottom_toBottomOf="@id/layout"
+        app:layout_constraintStart_toEndOf="@id/layout"
+        app:layout_constraintTop_toTopOf="@id/layout" />
 
     <TextView
         android:id="@+id/textName"
@@ -34,7 +54,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/viewSupporter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imageProfile" />
+        app:layout_constraintStart_toEndOf="@id/layout" />
 
     <TextView
         android:id="@+id/textRecentMessage"
@@ -45,21 +65,10 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/secondary_text"
-        android:textSize="@dimen/_12ssp"
+        android:textSize="@dimen/_10ssp"
         app:layout_constraintTop_toBottomOf="@id/viewSupporter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imageProfile" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/online"
-        android:layout_width="@dimen/_10sdp"
-        android:layout_height="@dimen/_10sdp"
-        android:background="@drawable/background_image"
-        android:backgroundTint="@color/online"
-        android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@id/textName"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/layout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

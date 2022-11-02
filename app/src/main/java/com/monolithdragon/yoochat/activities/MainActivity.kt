@@ -157,8 +157,9 @@ class MainActivity : BaseActivity(), UserListener {
 
             if (conversations.isNotEmpty()) {
                 conversations.sort()
+                val isOnline = preferenceManager.getBoolean(Constants.KEY_USER_ONLINE)!!
 
-                val adapter = ConversationAdapter(conversations, this@MainActivity)
+                val adapter = ConversationAdapter(conversations, this@MainActivity, isOnline)
                 binding.conversationRecyclerView.adapter = adapter
                 adapter.notifyDataSetChanged()
                 binding.conversationRecyclerView.visibility = View.VISIBLE
@@ -214,13 +215,5 @@ class MainActivity : BaseActivity(), UserListener {
         intent.putExtra(Constants.KEY_RECEIVER_USER, user)
         startActivity(intent)
         finish()
-    }
-
-    override fun onCallAudioMeeting(user: User) {
-
-    }
-
-    override fun onCallVideoMeeting(user: User) {
-
     }
 }

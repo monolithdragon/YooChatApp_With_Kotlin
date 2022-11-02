@@ -18,7 +18,7 @@ class YooNotificationManager(private val context: Context) {
     private val notificationId = Random.nextInt()
 
     @SuppressLint("ObsoleteSdkInt")
-    fun notification(title: String?, message: String?, pendingIntent: PendingIntent) {
+    fun notification(title: String?, message: String?, pendingIntent: PendingIntent?) {
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         val notificationBuilder = NotificationCompat.Builder(context, "chat_message")

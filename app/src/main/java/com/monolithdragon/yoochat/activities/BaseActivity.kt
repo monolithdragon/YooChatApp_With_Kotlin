@@ -25,7 +25,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-
+        preferenceManager.putBoolean(Constants.KEY_USER_ONLINE, false)
         database.collection(Constants.KEY_COLLECTION_USERS)
             .document(preferenceManager.getString(Constants.KEY_USER_ID)!!)
             .update(Constants.KEY_USER_ONLINE, false)
@@ -33,7 +33,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        preferenceManager.putBoolean(Constants.KEY_USER_ONLINE, true)
         database.collection(Constants.KEY_COLLECTION_USERS)
             .document(preferenceManager.getString(Constants.KEY_USER_ID)!!)
             .update(Constants.KEY_USER_ONLINE, true)

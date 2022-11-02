@@ -26,4 +26,6 @@
     <string name="type_message">Type message…</string>
     <string name="signout">Sign out…</string>
     <string name="unable_to_sign_out">Unable to sign out</string>
+    <string name="incoming_meeting_invitation">Incoming Meeting Invitation</string>
+    <string name="sending_meeting_invitation">Sending Meeting Invitation</string>
 </resources>

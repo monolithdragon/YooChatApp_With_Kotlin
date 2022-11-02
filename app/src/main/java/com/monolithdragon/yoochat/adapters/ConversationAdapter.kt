@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.monolithdragon.yoochat.databinding.ItemContainerConversationBinding
@@ -11,7 +12,7 @@ import com.monolithdragon.yoochat.listeners.UserListener
 import com.monolithdragon.yoochat.models.Conversation
 import com.monolithdragon.yoochat.models.User
 
-class ConversationAdapter(private val conversations: MutableList<Conversation>, private val conversationListener: UserListener): RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder>() {
+class ConversationAdapter(private val conversations: MutableList<Conversation>, private val conversationListener: UserListener, private val isOnline: Boolean): RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder>() {
 
     inner class ConversationViewHolder(private val binding: ItemContainerConversationBinding) :
             RecyclerView.ViewHolder(binding.root) {
@@ -20,7 +21,11 @@ class ConversationAdapter(private val conversations: MutableList<Conversation>, 
             binding.imageProfile.setImageBitmap(getUserImage(conversation.conversationImage))
             binding.textName.text = conversation.conversationName
             binding.textRecentMessage.text = conversation.conversationMessage?.message
-
+            if (isOnline) {
+                binding.online.visibility = View.VISIBLE
+            } else {
+                binding.online.visibility = View.GONE
+            }
             binding.root.setOnClickListener {
                 val user = User()
                 user.id = conversation.conversationId
