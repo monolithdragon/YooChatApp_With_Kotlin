@@ -20,6 +20,7 @@ class ConversationAdapter(private val conversations: MutableList<Conversation>, 
             binding.imageProfile.setImageBitmap(getUserImage(conversation.conversationImage))
             binding.textName.text = conversation.conversationName
             binding.textRecentMessage.text = conversation.conversationMessage?.message
+
             binding.root.setOnClickListener {
                 val user = User()
                 user.id = conversation.conversationId

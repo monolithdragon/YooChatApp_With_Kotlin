@@ -22,6 +22,12 @@ class UserAdapter(private var users: List<User>, private val userListener: UserL
             binding.root.setOnClickListener {
                 userListener.onClickListener(user)
             }
+            binding.imagePhoneCall.setOnClickListener {
+                userListener.onCallAudioMeeting(user)
+            }
+            binding.imageVideoCall.setOnClickListener {
+                userListener.onCallVideoMeeting(user)
+            }
         }
 
         private fun getUserImage(encodedImage: String?): Bitmap {
@@ -39,7 +45,7 @@ class UserAdapter(private var users: List<User>, private val userListener: UserL
         return UserViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserAdapter.UserViewHolder, position: Int) {
         holder.bind(users[position], userListener)
     }
 

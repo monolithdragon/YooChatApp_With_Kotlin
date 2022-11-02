@@ -20,5 +20,16 @@ class Constants {
         const val KEY_CONVERSATION_RECEIVER_NAME = "receiverName"
         const val KEY_CONVERSATION_SENDER_IMAGE = "senderImage"
         const val KEY_CONVERSATION_RECEIVER_IMAGE = "receiverImage"
+        const val KEY_USER_ONLINE = "online"
+        const val BASE_URL = "https://fcm.googleapis.com/fcm/"
+        const val SERVER_KEY = "AAAAp6VGD2g:APA91bHj2LUzHwDQa0JKglNDmQ9_8jCish0I9VIM3yJCddDxbGzx__f6dihnX1U2R2ymvLNz7cr8_8E86-Dir8JpT3ewyuIc4Vbg3fM5v9RcERrN1q67l3LYTPZDRUd8nGrGcSqK6AC1"
+        const val CONTENT_TYPE = "application/json"
+        const val REMOTE_MESSAGE_DATA = "data"
+        const val REMOTE_MESSAGE_REGISTRATION_IDS = "registration_ids"
+
+        val remoteMessageHeaders = hashMapOf(
+            "Authorization" to "key=${SERVER_KEY}",
+            "Content-Type" to CONTENT_TYPE
+        )
     }
 }

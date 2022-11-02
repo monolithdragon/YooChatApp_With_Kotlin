@@ -1,5 +1,6 @@
 package com.monolithdragon.yoochat.models
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -10,6 +11,7 @@ data class User(
     var profileImage: String? = null,
     var token: String? = null
 ): Parcelable {
+    @SuppressLint("NewApi")
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -18,6 +20,7 @@ data class User(
         parcel.readString()) {
     }
 
+    @SuppressLint("NewApi")
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)

@@ -1,7 +1,6 @@
 package com.monolithdragon.yoochat.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,7 +14,7 @@ import com.monolithdragon.yoochat.models.User
 import com.monolithdragon.yoochat.utilities.Constants
 import com.monolithdragon.yoochat.utilities.PreferenceManager
 
-class UsersActivity : AppCompatActivity(), UserListener {
+class UsersActivity : BaseActivity(), UserListener {
     private lateinit var binding: ActivityUsersBinding
     private lateinit var database: FirebaseFirestore
     private lateinit var preferenceManager: PreferenceManager
@@ -78,7 +77,7 @@ class UsersActivity : AppCompatActivity(), UserListener {
 
                 loaded(false)
             }
-            .addOnFailureListener { exception ->
+            .addOnFailureListener {
                 loaded(false)
                 showErrorMessage()
             }
@@ -113,5 +112,13 @@ class UsersActivity : AppCompatActivity(), UserListener {
     override fun onClickListener(user: User) {
         switchToChatActivity(user)
         finish()
+    }
+
+    override fun onCallAudioMeeting(user: User) {
+
+    }
+
+    override fun onCallVideoMeeting(user: User) {
+
     }
 }

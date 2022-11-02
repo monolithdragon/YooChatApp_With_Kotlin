@@ -8,14 +8,9 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
@@ -29,11 +24,13 @@ import com.monolithdragon.yoochat.models.User
 import com.monolithdragon.yoochat.utilities.Constants
 import com.monolithdragon.yoochat.utilities.PreferenceManager
 
-class MainActivity : AppCompatActivity(), UserListener {
+class MainActivity : BaseActivity(), UserListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var database: FirebaseFirestore
+
+    private var receiverId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,28 +110,45 @@ class MainActivity : AppCompatActivity(), UserListener {
                     val conversation = Conversation()
                     val message = Message()
                     message.message = documentChange.document.getString(Constants.KEY_CHAT_MESSAGE)
-                    message.senderId = documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID)
-                    message.receiverId = documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
+                    message.senderId =
+                        documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID)
+                    message.receiverId =
+                        documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
                     message.updateAt = documentChange.document.getDate(Constants.KEY_CHAT_CREATE_AT)
                     conversation.conversationMessage = message
 
-                    if (preferenceManager.getString(Constants.KEY_USER_ID).equals(documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID))) {
-                        conversation.conversationId = documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
-                        conversation.conversationName = documentChange.document.getString(Constants.KEY_CONVERSATION_RECEIVER_NAME)
-                        conversation.conversationImage = documentChange.document.getString(Constants.KEY_CONVERSATION_RECEIVER_IMAGE)
+                    receiverId = documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
+
+                    if (preferenceManager.getString(Constants.KEY_USER_ID)
+                            .equals(documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID))
+                    ) {
+                        conversation.conversationId =
+                            documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID)
+                        conversation.conversationName =
+                            documentChange.document.getString(Constants.KEY_CONVERSATION_RECEIVER_NAME)
+                        conversation.conversationImage =
+                            documentChange.document.getString(Constants.KEY_CONVERSATION_RECEIVER_IMAGE)
                     } else {
-                        conversation.conversationId = documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID)
-                        conversation.conversationName = documentChange.document.getString(Constants.KEY_CONVERSATION_SENDER_NAME)
-                        conversation.conversationImage = documentChange.document.getString(Constants.KEY_CONVERSATION_SENDER_IMAGE)
+                        conversation.conversationId =
+                            documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID)
+                        conversation.conversationName =
+                            documentChange.document.getString(Constants.KEY_CONVERSATION_SENDER_NAME)
+                        conversation.conversationImage =
+                            documentChange.document.getString(Constants.KEY_CONVERSATION_SENDER_IMAGE)
                     }
 
                     conversations.add(conversation)
                 } else if (documentChange.type == DocumentChange.Type.MODIFIED) {
                     for (conversation in conversations) {
-                        if (conversation.conversationMessage?.senderId.equals(documentChange.document.getString(Constants.KEY_CHAT_SENDER_ID))
-                            && conversation.conversationMessage?.receiverId.equals(documentChange.document.getString(Constants.KEY_CHAT_RECEIVER_ID))) {
-                            conversation.conversationMessage?.message = documentChange.document.getString(Constants.KEY_CHAT_MESSAGE)
-                            conversation.conversationMessage?.updateAt = documentChange.document.getDate(Constants.KEY_CHAT_CREATE_AT)
+                        if (conversation.conversationMessage?.senderId.equals(documentChange.document.getString(
+                                Constants.KEY_CHAT_SENDER_ID))
+                            && conversation.conversationMessage?.receiverId.equals(documentChange.document.getString(
+                                Constants.KEY_CHAT_RECEIVER_ID))
+                        ) {
+                            conversation.conversationMessage?.message =
+                                documentChange.document.getString(Constants.KEY_CHAT_MESSAGE)
+                            conversation.conversationMessage?.updateAt =
+                                documentChange.document.getDate(Constants.KEY_CHAT_CREATE_AT)
                             break
                         }
                     }
@@ -200,5 +214,13 @@ class MainActivity : AppCompatActivity(), UserListener {
         intent.putExtra(Constants.KEY_RECEIVER_USER, user)
         startActivity(intent)
         finish()
+    }
+
+    override fun onCallAudioMeeting(user: User) {
+
+    }
+
+    override fun onCallVideoMeeting(user: User) {
+
     }
 }
